@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/locale/locale.json</file>
+        <file>data/font/segoeprb.ttf</file>
+        <file>data/font/arial.ttf</file>
+        <file>data/textures/common/background.png</file>
+        <file>data/textures/common/Tiles.png</file>
+        <file>data/textures/games/lvl01/Tiles.png</file>
+        <file>data/textures/games/lvl02/desc.jpg</file>
+        <file>data/textures/games/lvl02/Tiles.png</file>
+    </qresource>
+</RCC>
