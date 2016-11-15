@@ -46,7 +46,7 @@ void clPPSettings::loadGameData() {
 void clPPSettings::saveGameData() const {
     setSetting("Data/level", gameData.level);
     setSetting("Data/points", gameData.points);
-//    setSetting("Data/dataLevels", gameData.dataLevels);
+    setSetting("Data/dataLevels", gameData.dataLevels);
 }
 
 //-------------------------------------------------------------

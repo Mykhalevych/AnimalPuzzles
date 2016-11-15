@@ -3,6 +3,7 @@
 #include "pplocale.h"
 #include "ppsound.h"
 #include "glevel01.h"
+#include "glevel02.h"
 
 //-------------------------------------------------------------
 GGameScreen::GGameScreen(QGraphicsScene *_scene, QWidget *_parent) :
@@ -25,7 +26,9 @@ GGameScreen::~GGameScreen() {
     delete btnNext;
     delete btnBack;
 
-    delete mainItem;
+    if (mainItem) {
+        delete mainItem;
+    }
 }
 
 //-------------------------------------------------------------
@@ -72,11 +75,13 @@ void GGameScreen::initScene() {
 void GGameScreen::updateScene() {
     if (!active) return;
 
-    mainItem->updateLevel();
-    if (mainItem->isWin() && !btnNext->isEnabled()) {
-        btnNext->setEnabled();
-        gSettings->gameData.dataLevels |= 1 << gSettings->gameData.level;
-        gSettings->saveGameData();
+    if (mainItem) {
+        mainItem->updateLevel();
+        if (mainItem->isWin() && !btnNext->isEnabled()) {
+            btnNext->setEnabled();
+            gSettings->gameData.dataLevels |= 1 << gSettings->gameData.level;
+            gSettings->saveGameData();
+        }
     }
 
     checkMouse();
@@ -89,7 +94,7 @@ void  GGameScreen::checkMouse() {
     btnBack->updateButton(gSettings->gameMouse.mouseX, gSettings->gameMouse.mouseY, gSettings->gameMouse.mouseCurState);
 
     if (!gSettings->gameMouse.mouseCurState && gSettings->gameMouse.mousePrevState) {
-        if (btnRefresh->checkClick(gSettings->gameMouse.mouseX, gSettings->gameMouse.mouseY)) {
+        if (btnRefresh->checkClick(gSettings->gameMouse.mouseX, gSettings->gameMouse.mouseY) && mainItem) {
             mainItem->repeat();
         }
         else if (btnBack->checkClick(gSettings->gameMouse.mouseX, gSettings->gameMouse.mouseY)) {
@@ -119,6 +124,10 @@ void GGameScreen::setMainItem() {
     switch (gSettings->gameData.level) {
         case 1:
             scene->addItem(mainItem = new GLevel01);
+            break;
+
+        case 2:
+            scene->addItem(mainItem = new GLevel02);
             break;
     }
 

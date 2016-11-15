@@ -2,7 +2,6 @@
 #include "pplocale.h"
 #include "ppsettings.h"
 #include <QPainter>
-#include <QDebug>
 
 GLevel01::GLevel01(QGraphicsItem *parent) : clItemBase(parent) {
 
@@ -206,13 +205,11 @@ void GLevel01::makeProgress() {
                 cur5l = static_cast<int>(cur5l + 0.5);
                 cur3l = 3.0;
                 curProgress = stNoProgress;
-                qDebug() << cur5l;
             }
             else if (cur5l <= 0.0) {
                 cur3l += cur5l;
                 cur3l = static_cast<int>(cur3l + 0.5);
                 cur5l = 0.0;
-                qDebug() << cur3l;
                 curProgress = stNoProgress;
             }
             break;
@@ -230,14 +227,12 @@ void GLevel01::makeProgress() {
                 cur3l += cur5l - 5.0;
                 cur3l = static_cast<int>(cur3l + 0.5);
                 cur5l = 5.0;
-                qDebug() << cur3l;
                 curProgress = stNoProgress;
             }
             else if (cur3l <= 0.0) {
                 cur5l += cur3l;
                 cur5l = static_cast<int>(cur5l + 0.5);
                 cur3l = 0.0;
-                qDebug() << cur5l;
                 curProgress = stNoProgress;
             }
             break;

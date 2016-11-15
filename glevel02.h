@@ -4,17 +4,26 @@
 #include "gitembase.h"
 #include <QPen>
 
+struct structCell {
+    int type;
+    int stat;
+};
+
 class GLevel02 : public clItemBase {
 private:
     int leftMoves;
 
     int curTouch;
+    int lastTouch;
+    qint64 timerTouch;
 
     QPen penLvl;
 
     QVector <QRect> vctrImgTiles;
 
-    char fieldStat[6][8];
+    structCell fieldStat[8][6];
+
+    QPixmap *pxmpDesc;
 
 public:
     GLevel02(QGraphicsItem *parent = 0);
@@ -26,6 +35,9 @@ public:
 
 protected:
     virtual void beginLevel();
+
+private:
+    void checkWin();
 
 };
 
