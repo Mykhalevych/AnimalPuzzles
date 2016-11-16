@@ -2,7 +2,6 @@
 #include "pplocale.h"
 #include "ppsettings.h"
 #include <QPainter>
-#include <QDebug>
 
 GLevel02::GLevel02(QGraphicsItem *parent) : clItemBase(parent) {
 
@@ -16,7 +15,8 @@ GLevel02::GLevel02(QGraphicsItem *parent) : clItemBase(parent) {
     vctrImgTiles.push_back(QRect(256, 0, 64, 64));
     vctrImgTiles.push_back(QRect(320, 0, 64, 64));
     vctrImgTiles.push_back(QRect(384, 0, 64, 64));
-    vctrImgTiles.push_back(QRect(452, 0, 64, 64));
+    vctrImgTiles.push_back(QRect(448, 0, 64, 64));
+    vctrImgTiles.push_back(QRect(512, 0, 64, 64));
 
     beginLevel();
 }
@@ -35,18 +35,18 @@ void GLevel02::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 //    gSettings->drawText(painter, gLocale->getLocaleString("GameScreen", 10, "Level "), gSettings->setFontSettings(*gSettings->gameFonts.fntArial, 16, true), QRect(20, 10, 920, 40), Qt::yellow);
 
-    painter->drawPixmap(160, 10, *pxmpDesc);
+    painter->drawPixmap(180, 10, *pxmpDesc);
 
     if (curTouch && lastTouch) {
         timerTouch += gSettings->gameTime.dTime;
-        if (timerTouch >= 500) {
+        if (timerTouch >= 750) {
             timerTouch = 0;
-            int x = curTouch % 8;
-            int y = curTouch / 8;
+            int x = curTouch % 9 - 1;
+            int y = curTouch / 9 - 1;
             fieldStat[x][y].stat = 0;
 
-            x = lastTouch % 8;
-            y = lastTouch / 8;
+            x = lastTouch % 9 - 1;
+            y = lastTouch / 9 - 1;
             fieldStat[x][y].stat = 0;
             curTouch = lastTouch = 0;
         }
@@ -67,6 +67,9 @@ void GLevel02::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         }
     }
 
+    QString txt = (leftMoves || !win) ? gLocale->getLocaleString("GameScreen", 8, "Left moves - %1").arg(leftMoves) : gLocale->getLocaleString("GameScreen", 9, "You win! Go next!");
+    gSettings->drawText(painter, txt, gSettings->setFontSettings(*gSettings->gameFonts.fntArial, 16, true), QRect(20, 460, 920, 40),  (leftMoves || win) ? Qt::yellow : Qt::red);
+
     Q_UNUSED(option);
     Q_UNUSED(widget);
 }
@@ -74,31 +77,32 @@ void GLevel02::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 //-------------------------------------------------------------
 bool GLevel02::checkMouse(int mX, int mY, bool mStatCur, bool mStatPrev) {
 
+    if (!clItemBase::checkMouse(mX, mY, mStatCur, mStatPrev)) return false;
     if (win || !leftMoves || (curTouch && lastTouch)) return clItemBase::checkMouse(mX, mY, mStatCur, mStatPrev);
 
     if (mStatCur && !mStatPrev) {
 
-        qDebug() << mX << mY;
         mX -= 200;
         mY -= 25;
 
         QRect rectMouse(0, 0, 560, 420);
         if (rectMouse.contains(mX, mY)) {
-            rectMouse = QRect((mX / 8) * 70 + 3, (mY / 6) * 70 + 3, 64, 64);
+            rectMouse = QRect((mX / 70) * 70 + 3, (mY / 70) * 70 + 3, 64, 64);
         }
         else {
             return clItemBase::checkMouse(mX, mY, mStatCur, mStatPrev);
         }
 
         if (rectMouse.contains(mX, mY)) {
-            int x = mX / 8;
-            int y = mY / 6;
+            int x = mX / 70;
+            int y = mY / 70;
             if (!curTouch && !fieldStat[x][y].stat) {
-                curTouch = y * 8 + x;
+                curTouch = (y + 1) * 9 + (x + 1);
+                fieldStat[x][y].stat = 1;
             }
-            else if (curTouch && !fieldStat[x][y].stat) {
-                int curX = curTouch % 8;
-                int curY = curTouch / 8;
+            else if (curTouch && !lastTouch && !fieldStat[x][y].stat) {
+                int curX = curTouch % 9 - 1;
+                int curY = curTouch / 9 - 1;
                 if (fieldStat[x][y].type == fieldStat[curX][curY].type) {
                     fieldStat[x][y].stat = fieldStat[curX][curY].stat = 2;
                     curTouch = 0;
@@ -106,11 +110,12 @@ bool GLevel02::checkMouse(int mX, int mY, bool mStatCur, bool mStatPrev) {
                 }
                 else {
                     fieldStat[x][y].stat = 1;
-                    lastTouch = y * 8 + x;
+                    lastTouch = (y + 1) * 9 + (x + 1);
                     timerTouch = 0;
                 }
+                leftMoves--;
             }
-            else if (curTouch && fieldStat[x][y].stat == 1) {
+            else if (curTouch && !lastTouch && fieldStat[x][y].stat == 1) {
                 fieldStat[x][y].stat = 0;
                 curTouch = 0;
             }
@@ -133,10 +138,16 @@ void GLevel02::beginLevel() {
         }
     }
 
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 3; j++) {
-            fieldStat[i][j].stat = 0;
-            fieldStat[i][j].type = qrand() % 6 + 1;
+    for (int pair = 0; pair < 24;) {
+        for (int i = 1; i <= 8 && pair < 24; i++, pair++) {
+
+            int firI, firJ;
+            do {
+                firI = qrand() % 8;
+                firJ = qrand() % 3;
+            } while (fieldStat[firI][firJ].type);
+            fieldStat[firI][firJ].stat = 0;
+            fieldStat[firI][firJ].type = i;
 
             int secI, secJ;
             do {
@@ -144,7 +155,7 @@ void GLevel02::beginLevel() {
                 secJ = qrand() % 3 + 3;
             } while (fieldStat[secI][secJ].type);
             fieldStat[secI][secJ].stat = 0;
-            fieldStat[secI][secJ].type = fieldStat[i][j].type;
+            fieldStat[secI][secJ].type = i;
         }
     }
 }

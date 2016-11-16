@@ -21,6 +21,7 @@ struct structGameData {
 struct structMouse {
     bool mouseCurState; // Текущее состояние кнопки - true нажата
     bool mousePrevState; // Предыдущее состояние кнопки
+    bool mouseDblClic; // Признак двойного нажатия
     int mouseX; // Координата X курсора мыши, в пикселях
     int mouseY; // Координата Y курсора мыши, в пикселях
     int pointX; // Координата X курсора мыши, где встал на экран

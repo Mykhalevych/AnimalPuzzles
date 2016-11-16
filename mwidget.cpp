@@ -11,7 +11,6 @@ MWidget::MWidget(QWidget *parent)
 {
     gSettings->initScreen(qApp->desktop()->width(), qApp->desktop()->height());
 
-//    gSettings->loadSettings();
     gSettings->loadGameData();
     gSettings->prepareGameData();
 
@@ -201,6 +200,7 @@ void MWidget::mouseReleaseEvent(QMouseEvent *me) {
 #endif
 
     gSettings->gameMouse.mouseCurState = false;
+    gSettings->gameMouse.mouseDblClic = false;
 }
 
 //-------------------------------------------------------------
@@ -219,6 +219,7 @@ void MWidget::mouseDoubleClickEvent(QMouseEvent *me) {
             gSettings->gameMouse.maxY = gSettings->gameMouse.mouseY;
 
     gSettings->gameMouse.mouseCurState = true;
+    gSettings->gameMouse.mouseDblClic = true;
 }
 
 //-------------------------------------------------------------

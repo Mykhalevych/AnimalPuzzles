@@ -66,6 +66,11 @@ QVariant clPPSettings::getSetting(const QString &key, const QVariant &defaultVal
 
 //-------------------------------------------------------------
 void clPPSettings::prepareGameData() {
+    // Init mouse
+    gameMouse.mouseCurState = false;
+    gameMouse.mousePrevState = false;
+    gameMouse.mouseDblClic = false;
+
     // Load fonts and other
     gameFonts.fntArial = loadFont(":/data/font/arial.ttf");
     gameFonts.fntSegoe = loadFont(":/data/font/segoeprb.ttf");

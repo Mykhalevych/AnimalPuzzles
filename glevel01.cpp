@@ -31,7 +31,8 @@ void GLevel01::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     makeProgress();
 
-    gSettings->drawText(painter, gLocale->getLocaleString("GameScreen", 10, "Level "), gSettings->setFontSettings(*gSettings->gameFonts.fntArial, 14, true), QRect(20, 10, 920, 40), Qt::yellow);
+    QString txt = gLocale->getLocaleString("GameScreen", 10, "Our mole needs 4 liters of water. Help him to measure out the required amount of water. The water in the barrel doesn’t run out.");
+    gSettings->drawText(painter, txt, gSettings->setFontSettings(*gSettings->gameFonts.fntArial, 14, true), QRect(20, 10, 920, 40), Qt::yellow);
     painter->setPen(Qt::blue);
     painter->setBrush(Qt::blue);
     painter->drawRect(QRect(231, 180, 185, 250)); // Cask
@@ -39,7 +40,7 @@ void GLevel01::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->drawRect(QRect(625, 430 - (130.0 * cur3l / 3.0), 108, 130.0 * cur3l / 3.0)); // 3L
     painter->drawPixmap(214, 60, *pxmpTiles);
 
-    QString txt = (leftMoves || !win) ? gLocale->getLocaleString("GameScreen", 8, "Left moves - %1").arg(leftMoves) : gLocale->getLocaleString("GameScreen", 9, "You win! Go next!");
+    txt = (leftMoves || !win) ? gLocale->getLocaleString("GameScreen", 8, "Left moves - %1").arg(leftMoves) : gLocale->getLocaleString("GameScreen", 9, "You win! Go next!");
     gSettings->drawText(painter, gLocale->getLocaleString("GameScreen", 5, "Cask"), gSettings->setFontSettings(*gSettings->gameFonts.fntArial, 20, true), QRect(232, 180, 184, 250), Qt::yellow);
     gSettings->drawText(painter, gLocale->getLocaleString("GameScreen", 6, "5L"), gSettings->setFontSettings(*gSettings->gameFonts.fntArial, 16, true), QRect(450, 240, 146, 190), Qt::yellow);
     gSettings->drawText(painter, gLocale->getLocaleString("GameScreen", 7, "3L"), gSettings->setFontSettings(*gSettings->gameFonts.fntArial, 16, true), QRect(625, 300, 108, 130), Qt::yellow);

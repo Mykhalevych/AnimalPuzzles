@@ -134,7 +134,12 @@ void  GMenuMain::checkMouse() {
         }
     }
     else if (gSettings->gameMouse.mouseCurState && !gSettings->gameMouse.mousePrevState) {
-        clPPGroupButton::clickGroup(1, QPoint(gSettings->gameMouse.mouseX, gSettings->gameMouse.mouseY));
+        if (clPPGroupButton::clickGroup(1, QPoint(gSettings->gameMouse.mouseX, gSettings->gameMouse.mouseY))) {
+            if (gSettings->gameMouse.mouseDblClic) {
+                gSettings->gameData.level = clPPGroupButton::getCklickedIdGroup(1);
+                goToNextScreen();
+            }
+        }
         if (clPPGroupButton::clickGroup(2, QPoint(gSettings->gameMouse.mouseX, gSettings->gameMouse.mouseY))) {
             gSettings->gameSettings.lang = clPPGroupButton::getCklickedIdGroup(2);
             gSettings->saveSettings();
